@@ -1,28 +1,12 @@
-<style>
-body {
-  min-width:800px;
-  overflow-x:hidden;
-}
-
-img {
-  margin:5px;
-  border:2px solid black;
-  vertical-align:middle;
-  width:75px;
-  height:75px;
-}
-</style>
-
 <script>
-document.write('Tabruptcy');
 
-chrome.tabs.getAllInWindow(null, function(tabs){
-  tabs.forEach(function(tab){
-    document.write(tab.url);
-	document.write('\n');
+chrome.windows.getAll({ populate: true }, function(windowList) {
+  windowList.forEach(function (window) {
+    window.tabs.forEach(function (tab) {
+      document.write(tab.url+'</br>');
+    });
   });
 });
-
-
+  
 
 </script>
