@@ -1,17 +1,15 @@
-<script>
-
-document.write('<div>Tabruptcy!</div>');
+<script type="text/javascript">
 
 chrome.windows.getAll({ populate: true }, function(windowList) {
+  document.write('<div>Tabruptcy!</div>');
   windowList.forEach(function (window) {
-    document.write('<div>Window: '+window.id);
+    document.write('<div style="display: inline-block">Window: '+window.id);
     window.tabs.forEach(function (tab) {
-      document.write('<span>'+tab.title+'</span>');
-      document.write('<span>'+tab.url+'</span>');
+      document.write('<div><b>'+tab.title+'</b></div>');
+      document.write('<div>'+tab.url+'</div>');
     });
     document.write('</div>');
   });
 });
-  
 
 </script>
