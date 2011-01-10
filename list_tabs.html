@@ -1,10 +1,15 @@
 <script>
 
+document.write('<div>Tabruptcy!</div>');
+
 chrome.windows.getAll({ populate: true }, function(windowList) {
   windowList.forEach(function (window) {
+    document.write('<div>Window: '+window.id);
     window.tabs.forEach(function (tab) {
-      document.write(tab.url+'</br>');
+      document.write('<span>'+tab.title+'</span>');
+      document.write('<span>'+tab.url+'</span>');
     });
+    document.write('</div>');
   });
 });
   
