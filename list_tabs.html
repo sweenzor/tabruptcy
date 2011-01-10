@@ -3,10 +3,10 @@
 chrome.windows.getAll({ populate: true }, function(windowList) {
   document.write('<div>Tabruptcy!</div>');
   windowList.forEach(function (window) {
-    document.write('<div style="display: inline-block">Window: '+window.id);
+    document.write('<div style="background-color: #AAAAAA; margin: 8px; padding: 12px">Window: '+window.id);
     window.tabs.forEach(function (tab) {
-      document.write('<div><b>'+tab.title+'</b></div>');
-      document.write('<div>'+tab.url+'</div>');
+      document.write('<div style="background-color: #EEEEEE; margin: 8px; padding: 4px"><div><b>'+tab.title+'</b></div>');
+      document.write('<div>'+tab.url+'</div></div>');
     });
     document.write('</div>');
   });
