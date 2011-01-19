@@ -8,4 +8,5 @@ There is escape! Declare Tabruptcy.
 ## To do
 - Template JS
 - Tab Screenshots
+- Control: All tabs? Tabs from this window?
 - Pretty-ier! 
