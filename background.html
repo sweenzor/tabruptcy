@@ -1,5 +1,8 @@
+<html>
 <script>
-chrome.browserAction.onClicked.addListener(function(tab) {
-  chrome.tabs.create({url:chrome.extension.getURL("list_tabs.html")});
-});
+  //React when a browser action's icon is clicked.
+  chrome.browserAction.onClicked.addListener(function(tab) {
+    alert(tab);
+  });
 </script>
+</html>
