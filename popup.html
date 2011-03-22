@@ -1,0 +1,156 @@
+<style>
+body {
+  min-width:357px;
+  overflow-x:hidden;
+}
+
+img {
+  margin:5px;
+  border:2px solid black;
+  vertical-align:middle;
+  width:75px;
+  height:75px;
+}
+</style>
+
+<body>
+<script>
+
+var extId;
+var interval = 50;
+
+chrome.tabs.getSelected(null, function (tab) {
+  var localpopup = chrome.extension.getURL("/popup.html");
+  if (tab.url != localpopup) {
+    chrome.tabs.create({"url":localpopup}, function callback(){});
+  } else {
+
+// var bgPage = chrome.extension.getBackgroundPage();
+var curtab;
+
+chrome.tabs.getSelected(null, function callback(tab) {
+  curtab = tab;
+});
+
+var tabPreviewURLs = [];
+var updating = false;
+var curIdx = 0;
+var alltabs = [];
+
+chrome.tabs.getAllInWindow(null, function(_alltabs) {
+  for (var i = 0; i < _alltabs.length; ++i) {
+    if (curtab.id != _alltabs[i].id)
+      alltabs.push(_alltabs[i]);
+  }
+});
+
+
+var previewDone = false;
+var previewInterval = setInterval(updatePreview, interval);
+
+function updatePreview() {
+  if (updating === true) return;
+  if (previewDone === true) return;
+
+  updating = true;
+
+  if (curIdx == alltabs.length) {
+    chrome.tabs.update(curtab.id, {selected:true});
+    setTimeout(function(){ renderContainer("thumnails", tabPreviewURLs); }, 200);
+    clearInterval(previewInterval);
+    previewDone = true;
+    updating = false;
+    return;
+  }
+
+  if (curIdx < alltabs.length) {
+    var tab = alltabs[curIdx];
+    chrome.tabs.update(tab.id, {selected:true});
+    chrome.tabs.captureVisibleTab(null, function (dataURL) {
+      tabPreviewURLs.push({url: dataURL, tabid: tab.id, title:tab.title});
+      updating = false;
+    });
+    ++curIdx;
+  }
+}
+
+function renderContainer(eleId, tabPreviewURLs) {
+  var container = document.getElementById(eleId);
+  var screenW = document.body.clientWidth;
+  var screenH = document.body.clientHeight;
+  var horSideMargin = 40;
+  var width = screenW - 2 * horSideMargin;
+  var ratio = 16/9.0;
+  var thumbnailW = 220;
+  var thumbnailH = thumbnailW/ratio;
+
+  container.style.width = width + "px";
+
+  for (var j = 0; j < tabPreviewURLs.length; ++j) {
+    var wrapper = document.createElement("div");
+    // wrapper.style.display = "inline";
+    wrapper.style.float = "left";
+
+    var img = document.createElement("img");
+    img.src = tabPreviewURLs[j].url;
+    img.style.width = thumbnailW;
+    img.style.height = thumbnailH;
+    img.style.border = "3px #ccc solid";
+    img.style.margin = 20;
+    img.style.display="block";
+    img.setAttribute("tabid", tabPreviewURLs[j].tabid);
+    img.addEventListener("click",
+      function(evt){
+        var tabid = parseInt(evt.target.getAttribute("tabid"))
+        chrome.tabs.getSelected(null, function(tab){
+          chrome.tabs.update(tabid, {selected:true});
+          chrome.tabs.remove(tab.id, function callback() {
+          });
+        });
+      }
+    );
+    img.addEventListener("mouseover",
+      function(evt) {
+        var img = evt.target;
+        img.style.borderTop = "10px #aaa solid";
+        img.style.borderLeft = "10px #aaa solid";
+        img.style.borderRight = "10px #aaa solid";
+        img.style.borderBottom = "15px #aaa solid";
+
+        img.style.marginTop = 23 - 10;
+        img.style.marginLeft = 23 - 10;
+        img.style.marginRight = 23 - 10;
+        img.style.marginBottom = 23 - 15;
+
+        img.style.WebkitBorderRadius = "15px";
+      }
+    );
+    img.addEventListener("mouseout",
+      function(evt) {
+        var img = evt.target;
+        img.style.border = "3px #ccc solid";
+        img.style.WebkitBorderRadius = "0px";
+        img.style.margin = 23 - 3;
+      }
+    );
+    wrapper.appendChild(img);
+    wrapper.style.width = thumbnailW + 46;
+
+    var titleDiv = document.createElement("div");
+    titleDiv.innerHTML = "<span>" + tabPreviewURLs[j].title + "</span>";
+    titleDiv.style.width = "100%";
+    titleDiv.style.textAlign = "center";
+    wrapper.appendChild(titleDiv);
+    wrapper.style.margin = 0;
+
+    container.appendChild(wrapper);
+  }
+}
+  };
+});
+
+</script>
+
+<div id="thumnails"> </div>
+
+</body>
