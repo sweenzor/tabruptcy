@@ -6,7 +6,7 @@ chrome.windows.getAll({ populate: true }, function(windowList) {
     document.write('<div style="background-color: #AAAAAA; margin: 16px; padding: 12px">');
     window.tabs.forEach(function (tab) {
       document.write('<div style="background-color: #EEEEEE; margin: 8px; padding: 4px"><div><b>'+tab.title+'</b></div>');
-      document.write('<div><a href="'+tab.url+'></a></div></div>');
+      document.write('<div><a href="'+tab.url+'">'+tab.url+'</a></div></div>');
     });
     document.write('</div>');
   });
